@@ -5,6 +5,8 @@ import { AlertService } from 'ngx-alerts';
 import { GradeService } from 'src/app/services/grade.service';
 import { RouterLinkComponent } from '../../router-link/router-link.component';
 import { ClassService } from 'src/app/services/class.service';
+import { ConfirmDialogComponent } from 'src/app/shared/common/confirm-dialog/confirm-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-list-grade',
@@ -64,9 +66,25 @@ export class ListGradeComponent implements OnInit {
             list: ''
           }
         }
+      },
+      StudentCount: {
+        title: 'Count',
+        type: 'html',
+        valuePrepareFunction: ( cell, row ) => {
+          return row.StudentCount ? `${row.StudentCount} Students` : '<span class="text-warning">No Student</span>';
+        },
+        editable: false,
+        addable: false,
       }
     },
     actions: { position: 'right'},
+    rowClassFunction: (row) => {
+      if (!row.data.StudentCount){
+          return '';
+      } else {
+          return 'hide-delete';
+      }
+    },
     add: {
       confirmCreate: true,
       addButtonContent: '<span class="p-2 tempting-azure-gradient text-white"><i class="mdi mdi-plus-circle" title="Add"></i> Add New</span>',
@@ -90,7 +108,8 @@ export class ListGradeComponent implements OnInit {
   gradeList: any;
 
   constructor(public progressbar: ProgressBarService, public alertService: AlertService, private gradeService: GradeService,
-              private classService: ClassService) { }
+              private classService: ClassService,
+              public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.makeClassList();
@@ -101,7 +120,6 @@ export class ListGradeComponent implements OnInit {
     this.gradeService.listGrade().subscribe( (res: any) => {
       this.gradeArray = res.data;
       this.source = new LocalDataSource(this.gradeArray);
-      
       this.gradeList = res.data.map((r) => {
         return { value : r.GradeId, title : r.Name };
       });
@@ -119,7 +137,8 @@ export class ListGradeComponent implements OnInit {
         return;
       }
       this.classList = res.data.map((r) => {
-        return { value : [r.ClassId, r.Name], title : r.Name };
+        // return { value : [r.ClassId, r.Name], title : r.Name };
+        return { value : r.ClassId, title : r.Name };
       });
       this.mySettings = this.settings;
       this.mySettings.columns.Class.editor.config.list = this.classList;
@@ -134,6 +153,7 @@ export class ListGradeComponent implements OnInit {
         this.progressbar.completeLoading();
         if (this.gradeService.message.status === 1){
           e.confirm.resolve(e.newData);
+          this.getList();
           this.progressbar.setSuccess();
           this.alertService.success(this.gradeService.message.message);
         }else{
@@ -149,13 +169,30 @@ export class ListGradeComponent implements OnInit {
         this.alertService.danger('Something Wrong');
       },
     };
+
+    e.newData.ClassObj = this.classList.filter(p => p.value === e.newData.Class)[0];
     console.log(e.newData);
-    
     if (e.data === undefined){
       this.gradeService.addGrade(e.newData).subscribe(gradeObserver);
     }else{
       this.gradeService.editGrade(e.newData).subscribe(gradeObserver);
     }
+  }
+
+  openDialog(e) {
+    e.data.id = e.data.ID;
+    console.log(e.data);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {data : e.data});
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.gradeService.deleteGrade(result).subscribe(
+          (res: any) => {
+            e.confirm.resolve();
+            this.alertService.success(res.message);
+          }
+        );
+      }
+    });
   }
 
 }

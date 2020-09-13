@@ -6,7 +6,7 @@
         <div class="card-body">
             <h4 class="card-title">Grade List</h4>
             <div *ngIf="!classListData" class="juicy-peach-gradient p-3 d-inline-block"> <p>Please add Grade before adding Student </p><button routerLink='/dashboard/class' class="btn btn-info pull-right">Add Class</button></div>
-            <ng2-smart-table *ngIf="classListData" [settings]="settings" [source]="source" (editConfirm)=onFormAction($event) (createConfirm)=onFormAction($event)></ng2-smart-table>
+            <ng2-smart-table *ngIf="classListData" [settings]="settings" [source]="source" (editConfirm)=onFormAction($event) (createConfirm)=onFormAction($event) (deleteConfirm)=openDialog($event)></ng2-smart-table>
         </div>
         </div>
         </div>

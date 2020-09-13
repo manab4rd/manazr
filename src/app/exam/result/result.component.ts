@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { GradeService } from 'src/app/services/grade.service';
-import { ExamService } from 'src/app/services/exam.service';
-import { LocalDataSource, ServerDataSource } from 'ng2-smart-table';
+import { LocalDataSource } from 'ng2-smart-table';
 import { SubjectService } from 'src/app/services/subject.service';
 import { ResultService } from 'src/app/services/result.service';
 import { ProgressBarService } from 'src/app/shared/services/progress-bar.service';
 import { AlertService } from 'ngx-alerts';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { MatDialog } from '@angular/material/dialog';
+import { MarksCardComponent } from 'src/app/shared/common/marks-card/marks-card.component';
 
 @Component({
   selector: 'app-result',
@@ -22,23 +23,45 @@ export class ResultComponent implements OnInit {
   // source: ServerDataSource;
   subjectListData: any;
   selectedgradeid: any;
+  subjectArr = [];
   constructor(private gradeService: GradeService,
-              private authService: AuthService, private subjectService: SubjectService,
+              private authService: AuthService,
               private resultService: ResultService,
               public progressbar: ProgressBarService,
               public alertService: AlertService,
-              private subjectervice: SubjectService) {}
+              private subjectService: SubjectService,
+              public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.makeGradeList();
     this.settings = {
-      actions: false,
+      actions: {
+        position: 'right',
+        add: false,
+        edit: false,
+        delete: false,
+        custom: [
+          {
+            name: 'viewmarksheet',
+            title: '<i class="mdi mdi-18px mdi-certificate p-2 mr-2 text-default"></i>'
+          },
+        ]},
       attr: {
         class: 'table table-bordered table-striped'
       }
     };
 
     // this.getTableSource();
+  }
+
+  openDialog(data) {
+    // console.log(data);
+    data.gradeId = this.selectedgradeid;
+    const dialogRef = this.dialog.open(MarksCardComponent, {data});
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
   }
 
   getTableSource(gradeid: any){
@@ -52,10 +75,18 @@ export class ResultComponent implements OnInit {
         this.selectedgradeid = gradeid;
         this.studentArray = res.data;
         this.source = new LocalDataSource(this.studentArray);
-        console.log(this.source);
+        // console.log(this.source);
         return;
       }
     });
+  }
+
+  onCustomAction(event) {
+    switch ( event.action) {
+      case 'viewmarksheet':
+        this.openDialog(event.data);
+        break;
+    }
   }
 
   makeGradeList(){
@@ -66,8 +97,25 @@ export class ResultComponent implements OnInit {
     });
   }
 
+  getTotalMarks(finaldata, row){
+    let totalMarks = 0;
+    this.subjectArr = [];
+    finaldata.map((maprow, index: number) => {
+      const OptionalSubjects = row.OptionalSubjects.split(',');
+      if ((maprow.Optional === 1 && OptionalSubjects.includes(maprow.SubjectId) || maprow.Optional === 0)){
+        this.subjectArr.push(maprow.SubjectId);
+      }
+    });
+    this.subjectArr.forEach(e => {
+      // tslint:disable-next-line: radix
+      totalMarks = totalMarks + parseInt(row[e]);
+    });
+    return totalMarks;
+  }
+
   getExamList(subscribeid?, gradeid?){
-    this.subjectervice.list().subscribe( (res: any) => {
+    this.subjectService.list().subscribe( (res: any) => {
+      this.authService.checkError(res);
       this.mySettings = {};
       this.mySettings = this.settings;
       const finalData = gradeid === undefined || gradeid === '' ?
@@ -90,18 +138,29 @@ export class ResultComponent implements OnInit {
         }, };
       });
 
-      const subjectArr = [];
-      finalData.map((maprow, index: number) => {
-        subjectArr.push(maprow.SubjectId);
-      });
+      // const subjectArr = [];
+      
+      // this.studentArray.map((val, idx) => {
+      //   this.subjectArr = [];
+      //   const OptionalSubjects = val.OptionalSubjects.split(',');
+      //   finalData.map((maprow, index: number) => {
+      //     // console.log(this.studentArray[index]);
+      //     console.log(maprow.SubjectId + ' +++ ' + (maprow.Optional === 1 && OptionalSubjects.includes(maprow.SubjectId)));
+      //     if ((maprow.Optional === 1 && OptionalSubjects.includes(maprow.SubjectId) || maprow.Optional === 0)){
+      //       console.log(maprow.SubjectId);
+      //       this.subjectArr.push(maprow.SubjectId);
+      //     }
+      //     // subjectArr.push(maprow.SubjectId);
+      //   });
+      // });
+      // finalData.map((maprow, index: number) => {
+      //   subjectArr.push(maprow.SubjectId);
+      // });
       this.mySettings.columns.FirstName = { title: 'Total',
         valuePrepareFunction: ( cell, row: any ) => {
           let totalMarks = 0;
-          subjectArr.forEach(e => {
-            totalMarks = totalMarks + parseFloat(eval('row.' + e ));
-          });
+          totalMarks = this.getTotalMarks(finalData, row);
           return (totalMarks / 100).toFixed(2);
-          // return `${parseFloat( eval('row.' + subjectArr[0])) + parseFloat( eval('row.' + subjectArr[2]))}`;
         }// `${parseFloat(row.SUB_0001) + parseFloat(row.SUB_0003)}`
       };
 
@@ -109,9 +168,11 @@ export class ResultComponent implements OnInit {
         valuePrepareFunction: ( cell, row: any ) => {
           let totalMarks = 0;
           let infoFlag = '';
-          subjectArr.forEach(e => {
+          this.subjectArr.forEach(e => {
+            // tslint:disable-next-line: no-eval
             infoFlag = parseFloat(eval('row.' + e )) === 0 ? '<i class="mdi mdi-information-outline ml-2 text-info" placement="top" ngbTooltip="Tooltip on top"></i>' : '';
-            totalMarks = totalMarks + parseFloat(eval('row.' + e )) / finalData.length;
+            // tslint:disable-next-line: no-eval
+            totalMarks = totalMarks + parseFloat(eval('row.' + e )) / this.subjectArr.length;
           });
           return (totalMarks / 100).toFixed(2) + '%' + infoFlag;
         }
@@ -122,14 +183,16 @@ export class ResultComponent implements OnInit {
     });
   }
 
-  getMarks(studentid, examid){
-    const results = localStorage.getItem('results');
-    const i = JSON.parse(results).find(p => p.StudentID === studentid && p.ExamId === examid);
-    if (i !== undefined){
-      return i.Marks;
-    }
-    return;
-  }
+
+
+  // getMarks(studentid, examid){
+  //   const results = localStorage.getItem('results');
+  //   const i = JSON.parse(results).find(p => p.StudentID === studentid && p.ExamId === examid);
+  //   if (i !== undefined){
+  //     return i.Marks;
+  //   }
+  //   return;
+  // }
 
   OnSubjectSelect(value: string){
     this.getExamList(value, this.selectedgradeid);
@@ -153,30 +216,30 @@ export class ResultComponent implements OnInit {
     });
   }
 
-  onFormAction( e ){
-    this.progressbar.startLoading();
-    const resultObserver = {
-      next: x => {
-        this.progressbar.completeLoading();
-        if (this.resultService.message.status === 1){
-          e.confirm.resolve(e.newData);
-          this.progressbar.setSuccess();
-          this.alertService.success(this.resultService.message.message);
-          // this.getList();
-        }else{
-          e.confirm.reject();
-          this.progressbar.setError();
-          this.alertService.warning(this.resultService.message.message);
-        }
-      },
-      error: err => {
-        console.error(err);
-        this.progressbar.completeLoading();
-        this.progressbar.setError();
-        this.alertService.danger('Something Wrong');
-      },
-    };
-    this.resultService.add(e.newData).subscribe(resultObserver);
-  }
+  // onFormAction( e ){
+  //   this.progressbar.startLoading();
+  //   const resultObserver = {
+  //     next: x => {
+  //       this.progressbar.completeLoading();
+  //       if (this.resultService.message.status === 1){
+  //         e.confirm.resolve(e.newData);
+  //         this.progressbar.setSuccess();
+  //         this.alertService.success(this.resultService.message.message);
+  //         // this.getList();
+  //       }else{
+  //         e.confirm.reject();
+  //         this.progressbar.setError();
+  //         this.alertService.warning(this.resultService.message.message);
+  //       }
+  //     },
+  //     error: err => {
+  //       console.error(err);
+  //       this.progressbar.completeLoading();
+  //       this.progressbar.setError();
+  //       this.alertService.danger('Something Wrong');
+  //     },
+  //   };
+  //   this.resultService.add(e.newData).subscribe(resultObserver);
+  // }
 
 }

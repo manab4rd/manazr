@@ -80,6 +80,7 @@ export class FeeComponent implements OnInit {
         type: 'html',
         filter: false,
         valuePrepareFunction: ( cell, row ) => {
+          // tslint:disable-next-line: radix
           return cell === null ? `<i class="mdi mdi-currency-inr"></i> 0` : `<i class="mdi mdi-currency-inr"></i>${parseInt(cell).toFixed(2)}`;
         },
       }

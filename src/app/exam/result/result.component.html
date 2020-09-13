@@ -13,7 +13,7 @@
             <option *ngFor="let option of subjectListData" [value]="option.value">{{option.title}}</option>
         </select>
         </div>
-        <ng2-smart-table *ngIf="subjectListData" [settings]="settings" [source]="source" (editConfirm)=onFormAction($event)></ng2-smart-table>
+        <ng2-smart-table *ngIf="subjectListData" [settings]="settings" [source]="source" (custom)="onCustomAction($event)"></ng2-smart-table>
     </div>
 </div>
 

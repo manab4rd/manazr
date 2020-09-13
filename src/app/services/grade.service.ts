@@ -33,9 +33,9 @@ export class GradeService {
     const headers = new HttpHeaders({
       Authorization : 'Bearer ' + this.authService.myRawToken
     });
-    const splitClass = newData.Class.split(',');
-    newData.ClassName = startCase(splitClass[1]);
-    newData.Class = startCase(splitClass[0]);
+    // const splitClass = newData.Class.split(',');
+    newData.ClassName = newData.ClassObj.title;
+    newData.Class = newData.Class;
     newData.Section = capitalize(newData.Section);
     newData.Name = newData.ClassName + newData.Section;
     newData.methodtype =  'PUT';
@@ -52,16 +52,25 @@ export class GradeService {
     const headers = new HttpHeaders({
       Authorization : 'Bearer ' + this.authService.myRawToken
     });
-    const splitClass = newData.Class.split(',');
-    newData.ClassName = startCase(splitClass[1]);
-    newData.Class = startCase(splitClass[0]);
+    // const splitClass = newData.Class.split(',');
+    newData.ClassName = newData.ClassObj.title;
+    newData.Class = newData.Class;
     newData.Section = capitalize(newData.Section);
-    newData.Name = newData.ClassName + newData.Section;
+    newData.Name = newData.ClassName + '-' + newData.Section;
     console.log(newData);
     return this.http.post(this.gradeUrl, newData, {headers}).pipe(
       map((response: any) => {
         this.message = response;
       })
     );
+  }
+
+  deleteGrade(id){
+    const headers = new HttpHeaders({
+      Authorization : 'Bearer ' + this.authService.myRawToken
+    });
+    const data = {id, methodtype:  'DELETE'};
+    return this.http.post(this.gradeUrl, data, {headers});
+    // return this.http.delete(this.classUrl + '?id=' + id, {headers});
   }
 }

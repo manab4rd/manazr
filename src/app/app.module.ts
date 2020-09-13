@@ -8,10 +8,9 @@ import { RouterModule } from '@angular/router';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgProgressModule } from 'ngx-progressbar';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AlertModule } from 'ngx-alerts';
 import { HttpErrorInterceptor } from './http-error.interceptor';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
 @NgModule({
   declarations: [
     AppComponent
@@ -27,7 +26,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     BrowserAnimationsModule,
     BrowserModule,
     AlertModule.forRoot({maxMessages: 5, timeout: 5000, position: 'right'}),
-    MatSnackBarModule
+    // MatSnackBarModule
     // DashboardModule,
   ],
   providers: [{

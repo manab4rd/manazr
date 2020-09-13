@@ -133,15 +133,28 @@ export class LeaveService {
     return result;
   }
 
+  // getLeaveForWidget(){
+  //   const headers = new HttpHeaders({
+  //     Authorization : 'Bearer ' + this.authService.myRawToken
+  //   });
+  //   // const staffId = this.authService.myuser.userId;
+  //   const result = this.http.get(this.quickcallUrl +
+  //     '?table=LeaveDetails LEFT JOIN Staff ON LeaveDetails.StaffId = Staff.StaffId AND LeaveDetails.OrganizationId = Staff.OrganizationId' +
+  //     '&filter=LeaveDetails.LeaveStartDate,LeaveDetails.LeaveEndDate, LeaveDetails.NoDays, CONCAT(Staff.FirstName, " ", Staff.LastName) as FullName' +
+  //     '&where=LeaveDetails.LeaveStatus = 1 AND LeaveDetails.OrganizationId=' + this.authService.myuser.organizationId, {headers});
+  //   return result;
+  // }
+
   getLeaveForWidget(){
     const headers = new HttpHeaders({
       Authorization : 'Bearer ' + this.authService.myRawToken
     });
-    // const staffId = this.authService.myuser.userId;
-    const result = this.http.get(this.quickcallUrl +
-      '?table=LeaveDetails LEFT JOIN Staff ON LeaveDetails.StaffId = Staff.StaffId AND LeaveDetails.OrganizationId = Staff.OrganizationId' +
-      '&filter=LeaveDetails.LeaveStartDate,LeaveDetails.LeaveEndDate, LeaveDetails.NoDays, CONCAT(Staff.FirstName, " ", Staff.LastName) as FullName' +
-      '&where=LeaveDetails.LeaveStatus = 1 AND LeaveDetails.OrganizationId=' + this.authService.myuser.organizationId, {headers});
+    const model = {
+      table: 'LeaveDetails LEFT JOIN Staff ON LeaveDetails.StaffId = Staff.StaffId AND LeaveDetails.OrganizationId = Staff.OrganizationId',
+      filter: 'LeaveDetails.LeaveStartDate,LeaveDetails.LeaveEndDate, LeaveDetails.NoDays, CONCAT(Staff.FirstName, " ", Staff.LastName) as FullName',
+      where: 'LeaveDetails.LeaveStatus = 1 AND LeaveDetails.OrganizationId=' + this.authService.myuser.organizationId
+    };
+    const result = this.http.post(this.quickcallUrl, model , {headers});
     return result;
   }
 

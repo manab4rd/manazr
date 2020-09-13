@@ -33,7 +33,7 @@ export class PaymentButtonsComponent implements ViewCell, OnInit, AfterViewInit 
 
   ngOnInit() {
     // console.log(this.myuser);
-    console.log(this.rowData);
+    // console.log(this.rowData);
     for ( let i = 1; i <= this.rowData.Occurrence; i++){
       if (this.value === null || this.value === 0 ){
         this.content += `<div class="btn-group btn-group-sm m-1" role="group">

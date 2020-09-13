@@ -19,7 +19,7 @@ export class OrganizationCardComponent implements OnInit {
     this.orgData = this.authService.myuser;
     this.authService.getUserById(this.orgData.id).subscribe(
       (res: ApiResponse) => {
-        console.log(res.data);
+        // console.log(res.data);
         this.orgDetails = res.data[0];
       }
     );

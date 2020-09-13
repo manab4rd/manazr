@@ -23,7 +23,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             } else {
               // server-side error
               errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-              alert('Data Not Saved. Server Error');
+              alert('Data Issue. Error Code: ' + error.status);
             }
             // window.alert(errorMessage);
             return throwError(errorMessage);

@@ -7,6 +7,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { Subject } from 'rxjs/internal/Subject';
 import { environment } from 'src/environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AlertService } from 'ngx-alerts';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,8 @@ export class AuthService {
   myuser: any;
 
   helper = new JwtHelperService();
-  constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute, private snackBar: MatSnackBar) {}
+  constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute,
+              private alertService: AlertService) {}
 
   private storageSub = new Subject<string>();
 
@@ -135,22 +137,15 @@ export class AuthService {
   checkError(res){
     if (res === null){
       this.router.navigate(['/login']);
-      this.snackBar.open('Server Disconnected. Contact Provider', '', {
-        duration: 7000,
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-        panelClass: ['bg-danger', 'text-white']
+      this.alertService.danger({
+        html: '<h5>Server Disconnected. Contact Provider</h5>'
       });
-      return;
+      return false;
     } else if (res.data === 'Expired Token'){
       this.router.navigate(['/login']);
-      this.snackBar.open('Session Expired. Login Again', '', {
-        duration: 3000,
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-        panelClass: ['bg-warning', 'text-white']
-      });
-      return;
+      this.alertService.warning('Session Expired. Login Again')
+      return false;
     }
+    return;
   }
 }

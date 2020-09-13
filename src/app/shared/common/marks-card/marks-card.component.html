@@ -10,7 +10,7 @@
             <button mat-button class="btn btn-secondary ml-3" (click)="onNoClick()">Cancel</button>
         </div>
     </div>
-    <div class="" id="print-markscard">
+    <div id="print-markscard">
         <table class="table-bordered" cellpadding="10px" width="900in">
             <tr>
                 <td colspan=2>
@@ -32,19 +32,22 @@
             <tr>
             <td colspan=2>
             <table class="w-100 small table table-borderless">
-                <tr>
-                    <th>
-                        Description
-                    </th>
-                    <th>
-                        Pay Date
-                    </th>
-                    <th>
-                        (Amount - Discount) x Tax (%)
-                    </th>
-                    <th>
-                        Amount
-                    </th>
+                <tr class="bg-dark text-white">
+                    <th> Subject Id </th>
+                    <th> Subject Name </th>
+                    <th> Type </th>
+                    <th> Marks </th>
+                </tr>
+                <tr *ngFor="let subject of subjectArr">
+                    <td>{{subject.SubjectId}}</td>
+                    <td>{{subject.SubjectGroup}}</td>
+                    <td>{{subject.SubjectType | titlecase}}</td>
+                    <td>{{student[0][subject.SubjectId] / 100}}</td>
+                </tr>
+                <tr class="bg-dark text-white">
+                    <th colspan=2></th>
+                    <th> Total Percentage</th>
+                    <td class="bg-white text-dark"><span class="h4-responsive" *ngIf="resultMarks">{{resultMarks}}%</span></td>
                 </tr>
             </table>
             </td>
