@@ -113,7 +113,7 @@ import { ClassCountComponent } from './widgets/class-count/class-count.component
     ChartsModule,
     ImageToDataUrlModule,
     RoutineModule,
-    OwlDateTimeModule, OwlNativeDateTimeModule,
+    OwlDateTimeModule, OwlNativeDateTimeModule
   ],
   exports: [
     HomeComponent,

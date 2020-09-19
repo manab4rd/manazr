@@ -58,7 +58,9 @@ export class ListGradeComponent implements OnInit {
         title: 'Succeeding',
         type: 'html',
         valuePrepareFunction: ( cell, row ) => {
-          return `${row.Succeeding}`;
+          const Succeed =  this.gradeList.filter(p => p.value === row.Succeeding);
+          console.log(Succeed);
+          return Succeed.length > 0 ? Succeed[0].title : '<span class="text-warning">None</span>';
         },
         editor: {
           type: 'list',
@@ -119,7 +121,6 @@ export class ListGradeComponent implements OnInit {
   getList(){
     this.gradeService.listGrade().subscribe( (res: any) => {
       this.gradeArray = res.data;
-      this.source = new LocalDataSource(this.gradeArray);
       this.gradeList = res.data.map((r) => {
         return { value : r.GradeId, title : r.Name };
       });
@@ -127,6 +128,7 @@ export class ListGradeComponent implements OnInit {
       this.mySettings = this.settings;
       this.mySettings.columns.Succeeding.editor.config.list = this.gradeList;
       this.settings = Object.assign({}, this.mySettings);
+      this.source = new LocalDataSource(this.gradeArray);
     });
   }
 

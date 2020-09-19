@@ -5,6 +5,7 @@ import { ProgressBarService } from 'src/app/shared/services/progress-bar.service
 import { AlertService } from 'ngx-alerts';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/shared/common/confirm-dialog/confirm-dialog.component';
+import { ColorPickerEditComponent } from 'src/app/shared/common/color-picker/color-picker.component';
 
 @Component({
   selector: 'app-list-staff-type',
@@ -28,6 +29,10 @@ export class ListStaffTypeComponent implements OnInit {
         valuePrepareFunction: ( cell, row ) => {
           // const hexColor = cell ? cell : '#' + Math.floor(Math.random() * 16777215).toString(16);
           return `<font class="mdi mdi-checkbox-blank" color="${cell}"></font> ${cell}`;
+        },
+        editor : {
+          type: 'custom',
+          component: ColorPickerEditComponent
         }
       },
       count: {

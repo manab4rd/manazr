@@ -1,4 +1,4 @@
 <ng-progress id="progressBar" [color]="progressbar.currentColor" [spinnerPosition]="progressbar.left" [thick]=true></ng-progress>
 <ngx-alerts></ngx-alerts>
 <!--<a (click)="authService.logout()">Logout </a>-->
-<router-outlet></router-outlet>
+<router-outlet (activate)="onActivate($event)"></router-outlet>

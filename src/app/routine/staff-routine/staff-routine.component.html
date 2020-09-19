@@ -4,7 +4,7 @@
             <div *ngIf="!selectedStaffId" class="card-header bg-transparent d-flex justify-content-between">
                 <h4> Staff Routine</h4>
                 <select class="form-control col-md-4" (change)=employeeChange($event)>
-                    <option value="all"> Select Employee</option>
+                    <option value="all"> Select Staff</option>
                     <option *ngFor="let staff of staffList" [value]="staff.StaffId">{{staff.FirstName}} {{staff.LastName}}</option>
                 </select>
             </div>

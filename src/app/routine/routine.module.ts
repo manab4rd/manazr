@@ -4,7 +4,6 @@ import { MatAutocompleteModule} from '@angular/material/autocomplete';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatInputModule} from '@angular/material/input';
 import {MatTableModule} from '@angular/material/table';
-import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
 
@@ -12,7 +11,7 @@ import { RoutineRoutingModule } from './routine-routing.module';
 import { RoutineComponent } from './routine/routine.component';
 import { SharedModule } from '../shared/shared.module';
 import { StaffRoutineComponent } from './staff-routine/staff-routine.component';
-
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 @NgModule({
   declarations: [RoutineComponent, StaffRoutineComponent],
@@ -23,9 +22,9 @@ import { StaffRoutineComponent } from './staff-routine/staff-routine.component';
     ReactiveFormsModule, FormsModule,
     MatInputModule,
     MatTableModule,
-    OwlDateTimeModule, OwlNativeDateTimeModule,
     DragDropModule,
-    SharedModule
+    SharedModule,
+    NgxMaterialTimepickerModule
   ],
   exports: [RoutineComponent, StaffRoutineComponent],
 })

@@ -3,8 +3,6 @@ import { GradeService } from 'src/app/services/grade.service';
 import { Observable } from 'rxjs/internal/Observable';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatTableDataSource } from '@angular/material/table';
-import * as moment from 'moment';
 import { SubjectService } from 'src/app/services/subject.service';
 import { ApiResponse } from 'src/app/models/models';
 import { RoutineService } from 'src/app/services/routine.service';
@@ -27,12 +25,14 @@ export class RoutineComponent implements OnInit {
   gradeListRawData: any;
   gradeAutoComplete = new FormControl();
   selectedGradeId: string;
-  selectedMoments = [];
+  // selectedMoments = [];
   subjectList: any;
   unassignedSubjects = [];
   assignedSubjects = [];
   timingsArr = [];
   update = false;
+  startTime: string;
+  endTime: string;
   // dataSource = new MatTableDataSource();
 
   displayedColumns: string[] = ['day'];
@@ -58,7 +58,9 @@ export class RoutineComponent implements OnInit {
           this.getData();
           this.update = false;
           this.oldTimings = [];
-          this.selectedMoments = [];
+          // this.selectedMoments = [];
+          this.startTime = '';
+          this.endTime = '';
         }else{
           this.progressbar.setError();
           this.alertService.warning(this.routineService.message.message);
@@ -122,14 +124,14 @@ export class RoutineComponent implements OnInit {
   }
 
   addClassTimings(type){
-    // console.log(this.selectedMoments);
-    this.timingsArr = [];
-    this.selectedMoments.map((v) => {
-      this.timingsArr.push(moment(v).format('LT'));
-    });
+    console.log(this.startTime);
+    this.timingsArr = [this.startTime, this.endTime];
+    // this.selectedMoments.map((v) => {
+    //   this.timingsArr.push(moment(v).format('LT'));
+    // });
     // console.log(this.timingsArr);
     this.timingsText = this.timingsArr.join('-');
-    
+
     // console.log(this.dataSource);
     if (type === 'add'){
       this.saveTimings();
@@ -140,7 +142,7 @@ export class RoutineComponent implements OnInit {
   }
 
   getSubjects(){
-    const filter = 'GradeId="' + this.selectedGradeId + '"&Status= 1';
+    const filter = 'GradeId="' + this.selectedGradeId + '" AND StaffId<>"0"';
     this.subjectService.listSubjectsByFilter(filter).subscribe((res: ApiResponse) => {
       if (res.status === 1){
         console.log(res.data);
@@ -178,14 +180,15 @@ export class RoutineComponent implements OnInit {
     // console.log(timings);
     this.update = true;
     this.oldTimings = timings;
-    this.selectedMoments = [];
+    // this.selectedMoments = [];
     this.timingsArr = timings.split('-');
-    this.timingsArr.map(v => {
-      const hour: any = moment(v, ['LT']).format('h');
-      const min: any = moment(v, ['LT']).format('mm');
-      this.selectedMoments.push(new Date(new Date().setHours(hour, min, 0, 0)));
-    });
-    
+    // this.timingsArr.map(v => {
+    //   const hour: any = moment(v, ['LT']).format('h');
+    //   const min: any = moment(v, ['LT']).format('mm');
+    //   this.selectedMoments.push(new Date(new Date().setHours(hour, min, 0, 0)));
+    // });
+    this.startTime = this.timingsArr[0];
+    this.endTime = this.timingsArr[1];
     // this.selectedMoments = [new Date(new Date().setHours(hour, min, 0, 0)), new Date(new Date().setHours(1, 10, 0, 0))]
   }
 

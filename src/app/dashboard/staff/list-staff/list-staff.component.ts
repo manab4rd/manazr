@@ -50,6 +50,9 @@ export class ListStaffComponent implements OnInit {
           return `${row.FirstName} ${row.LastName}`;
         },
       },
+      MobilePhone: {
+        title: 'Mobile'
+      },
       Sex: {
         title: 'Sex',
         filter: false,
@@ -59,19 +62,13 @@ export class ListStaffComponent implements OnInit {
         },
       },
       FatherFirstName: {
-        title: 'Father Name',
+        title: 'Family Member',
         valuePrepareFunction: ( cell, row ) => {
           return `${row.FatherFirstName} ${row.FatherLastName}`;
         },
       },
-      MotherFirstName: {
-        title: 'Mother Name',
-        valuePrepareFunction: ( cell, row ) => {
-          return `${row.MotherFirstName} ${row.MotherLastName}`;
-        },
-      },
-      MobilePhone: {
-        title: 'Mobile'
+      FatherContact: {
+        title: 'Family Contact'
       },
       Status: {
         title: 'Status',

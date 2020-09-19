@@ -26,6 +26,9 @@ import { StudentCardComponent } from './common/student-card/student-card.compone
 import { StudentAttendanceCapsuleComponent } from './common/student-attendance-capsule/student-attendance-capsule.component';
 import { OrganizationCardComponent } from './common/organization-card/organization-card.component';
 import { MarksCardComponent } from './common/marks-card/marks-card.component';
+import { ColorPickerComponent, ColorPickerEditComponent } from './common/color-picker/color-picker.component';
+import { ColorPickerModule } from 'ngx-color-picker';
+
 @NgModule({
   declarations: [HeaderComponent, SidebarMenuComponent, DatepickerComponent,
                  SmartTableDatepickerRenderComponent, CheckboxComponent,
@@ -34,18 +37,20 @@ import { MarksCardComponent } from './common/marks-card/marks-card.component';
                  FileUploadComponent, ThumbnailImageComponent, SessionDialogComponent, SubscriptionDialogComponent,
                  ICardComponent,
                  SidebarMenuReportsComponent,
-                 MoneyReceiptComponent, StudentCardComponent, StudentAttendanceCapsuleComponent, OrganizationCardComponent, MarksCardComponent ],
+                 MoneyReceiptComponent, StudentCardComponent, StudentAttendanceCapsuleComponent,
+                 OrganizationCardComponent, MarksCardComponent, ColorPickerComponent, ColorPickerEditComponent ],
   imports: [
     CommonModule, NgbModule, DashboardRoutingModule, OwlDateTimeModule,
     OwlNativeDateTimeModule, ReactiveFormsModule,
-    FormsModule, MatCheckboxModule, MatDialogModule, NgxBarcodeModule, NgxPrintModule
+    FormsModule, MatCheckboxModule, MatDialogModule, NgxBarcodeModule, NgxPrintModule,
+    ColorPickerModule
   ],
   exports: [HeaderComponent, SidebarMenuComponent, DatepickerComponent,
             SmartTableDatepickerRenderComponent, CheckboxComponent,
             CheckboxEditComponent, PaymentButtonsComponent, ForFilterPipe, ArraySortPipe,
             ConfirmDialogComponent, FileUploadComponent, ThumbnailImageComponent,
             SessionDialogComponent, SubscriptionDialogComponent, ICardComponent, SidebarMenuReportsComponent,
-            MoneyReceiptComponent, StudentCardComponent
+            MoneyReceiptComponent, StudentCardComponent, ColorPickerComponent, ColorPickerEditComponent
           ]
 })
 export class SharedModule { }

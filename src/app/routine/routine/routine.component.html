@@ -15,45 +15,50 @@
             <h3>Timings</h3>
             <div class="form-inline">
             <label class="mr-2">From: </label>
-                <input class="form-control" [owlDateTimeTrigger]="dt2" [owlDateTime]="dt2"
-                    [(ngModel)]="selectedMoments"
-                    [selectMode]="'rangeFrom'">
-                <owl-date-time [pickerType]="'timer'" #dt2></owl-date-time>
+                <input class="form-control" [ngxTimepicker]="pickerFrom" [(ngModel)]="startTime">
+                <ngx-material-timepicker #pickerFrom [min]="'08:00 am'" [max]="'08:00 pm'"></ngx-material-timepicker>
             
 
             <label class="mx-2">To:</label>
-                <input class="form-control" [owlDateTimeTrigger]="dt3" [owlDateTime]="dt3"
-                    [(ngModel)]="selectedMoments"
-                    [selectMode]="'rangeTo'">
-                <owl-date-time [pickerType]="'timer'" #dt3></owl-date-time>
+                <input class="form-control" [ngxTimepicker]="pickerTo" [(ngModel)]="endTime">
+                <ngx-material-timepicker #pickerTo [min]="'08:00 am'" [max]="'08:00 pm'"></ngx-material-timepicker>
 
             <button *ngIf="!update" class="btn btn-primary mt-2" (click) ='addClassTimings("add")'> Add Timings</button>
             <button *ngIf="update" class="btn btn-info mt-2" (click) ='addClassTimings("update")'> Update Timings</button>
-            <button *ngIf="update" class="btn btn-default ml-3 mt-2" (click) ='update = !update; selectedMoments =[]'> Cancel</button>
+            <button *ngIf="update" class="btn btn-default ml-3 mt-2" (click) ='update = !update; startTime =""; endTime = ""'> Cancel</button>
             </div>
         </div>
     </div>
 
     <div *ngIf="selectedGradeId" class="col-lg-12 d-flex">
-        <table #assignList mat-table [dataSource]="dataSource" class="table-bordered table-compact table-striped w-100 ">
+        <table #assignList mat-table [dataSource]="dataSource" class="table-compact w-100 ">
             <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns">
-                <th mat-header-cell *matHeaderCellDef> 
-                    {{column | titlecase}} 
-                    <span *ngIf="column !== 'day'" (click)="updateTimings(column)">Update</span>
+                <th class="font-weight-bolder px-2 text-uppercase" mat-header-cell *matHeaderCellDef> 
+                    <div class="d-flex justify-content-between align-items-center h-100">
+                        {{column | titlecase}}
+                        <a *ngIf="column !== 'day'" (click)="updateTimings(column)" class="mdi mdi-18px mdi-pencil-circle ng-star-inserted text-default"></a>
+                    </div>
                 </th>
-                <td mat-cell *matCellDef="let element"> 
-                {{element[column]}} 
-                <div *ngFor="let data of routineData | filter : 'Day': element['day']">
-                <select class="border-0 p-1 px-2 bg-transparent" *ngIf="column !== 'day' && column == data.Timings" (change)="onSubjectChange(column,element['day'], $event)">
-                <option>Select Subject</option>
-                <option *ngFor="let subject of subjectList" [selected]="data.SubjectId == subject.ID" [value]="subject.ID">{{subject.Name}}</option>
-                </select>
-                </div> 
+                <td class="py-3" mat-cell *matCellDef="let element"> 
+                    {{element[column]}} 
+                    <div *ngFor="let data of routineData | filter : 'Day': element['day']">
+                        <select class="border-0 p-1 px-2 bg-transparent" *ngIf="column !== 'day' && column == data.Timings" (change)="onSubjectChange(column,element['day'], $event)">
+                            <option>Select Subject</option>
+                            <option *ngFor="let subject of subjectList" [selected]="data.SubjectId == subject.ID" [value]="subject.ID">{{subject.Name}}</option>
+                        </select>
+                    </div> 
                 </td>
             </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr class="d-table-row" mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr class="border-bottom" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
+    </div>
+
+    <div class="bg-inverse-warning p-2 info-list my-5 col info-box">
+    <h5>Info Box</h5>
+    <ul>
+        <li>Only Assigned subjects shows up in the dropdown. Assign subject to a staff if it is missing in the dropdown</li>
+    </ul>
     </div>
 </div>
