@@ -38,11 +38,19 @@ export class LeaveService {
     const headers = new HttpHeaders({
       Authorization : 'Bearer ' + this.authService.myRawToken
     });
-    const result = this.http.get(this.quickcallUrl +
-      '?table=LeaveDetails ld RIGHT JOIN LeaveType lt ON ld.LeaveType = lt.ID AND ld.OrganizationId = lt.OrganizationId JOIN Staff ON ld.StaffId = Staff.StaffId AND ld.OrganizationId = lt.OrganizationId' +
-      '&filter=ld.*, lt.Name, CONCAT(Staff.FirstName, " ", Staff.Lastname) AS StaffName' +
-      '&where=ld.ApproverId = "' + sid + '" ' +
-      'AND ld.OrganizationId=' + this.authService.myuser.organizationId, {headers});
+    // const result = this.http.get(this.quickcallUrl +
+    //   '?table=LeaveDetails ld RIGHT JOIN LeaveType lt ON ld.LeaveType = lt.ID AND '+
+    //   'ld.OrganizationId = lt.OrganizationId JOIN Staff ON ld.StaffId = Staff.StaffId AND ld.OrganizationId = lt.OrganizationId' +
+    //   '&filter=ld.*, lt.Name, CONCAT(Staff.FirstName, " ", Staff.Lastname) AS StaffName' +
+    //   '&where=ld.ApproverId = "' + sid + '" ' +
+    //   'AND ld.OrganizationId=' + this.authService.myuser.organizationId, {headers});
+
+    const model = {
+      table: 'LeaveDetails ld RIGHT JOIN LeaveType lt ON ld.LeaveType = lt.ID AND ld.OrganizationId = lt.OrganizationId JOIN Staff ON ld.StaffId = Staff.StaffId AND ld.OrganizationId = lt.OrganizationId',
+      filter: 'ld.*, lt.Name, CONCAT(Staff.FirstName, " ", Staff.Lastname) AS StaffName',
+      where: 'ld.ApproverId = "' + sid + '" AND ld.OrganizationId=' + this.authService.myuser.organizationId
+    };
+    const result = this.http.post(this.quickcallUrl, model , {headers});
     return result;
   }
 
@@ -125,11 +133,22 @@ export class LeaveService {
       Authorization : 'Bearer ' + this.authService.myRawToken
     });
     const staffId = this.authService.myuser.userId;
-    const result = this.http.get(this.quickcallUrl +
-      '?table=Staff s1 left join Staff s2 on s2.StaffId = s1.ReportsTo left join Staff s3 on s3.StaffId = s2.ReportsTo&filter=concat(s3.FirstName," ",s3.LastName) as Parent2Name,s2.ReportsTo as Parent2,concat(s2.FirstName," ",s2.LastName) as Parent1Name,' +
-      's1.ReportsTo as Parent1,s1.StaffId,s1.FirstName&where=s1.StaffId = "' + staffId + '" ' +
+    // const result = this.http.get(this.quickcallUrl +
+    // '?table=Staff s1 left join Staff s2 on s2.StaffId = s1.ReportsTo left join Staff s3 on s3.StaffId = s2.ReportsTo'+
+    // '&filter=concat(s3.FirstName," ",s3.LastName) as Parent2Name,s2.ReportsTo as Parent2,'+
+    // 'concat(s2.FirstName," ",s2.LastName) as Parent1Name,' +
+    //   's1.ReportsTo as Parent1,s1.StaffId,s1.FirstName&where=s1.StaffId = "' + staffId + '" ' +
+    //   'AND s1.ReportsTo in (s1.ReportsTo, s2.ReportsTo, s3.ReportsTo) ' +
+    //   'AND s1.OrganizationId=' + this.authService.myuser.organizationId, {headers});
+
+    const model = {
+      table: 'Staff s1 left join Staff s2 on s2.StaffId = s1.ReportsTo left join Staff s3 on s3.StaffId = s2.ReportsTo',
+      filter: 'concat(s3.FirstName," ",s3.LastName) as Parent2Name,s2.ReportsTo as Parent2,concat(s2.FirstName," ",s2.LastName) as Parent1Name, s1.ReportsTo as Parent1,s1.StaffId,s1.FirstName',
+      where: 's1.StaffId = "' + staffId + '" ' +
       'AND s1.ReportsTo in (s1.ReportsTo, s2.ReportsTo, s3.ReportsTo) ' +
-      'AND s1.OrganizationId=' + this.authService.myuser.organizationId, {headers});
+      'AND s1.OrganizationId=' + this.authService.myuser.organizationId
+    };
+    const result = this.http.post(this.quickcallUrl, model , {headers});
     return result;
   }
 

@@ -1,7 +1,6 @@
 
-<div class="row mb-4">
-<div class="col-lg-12">
-  <div class="col-lg-12 grid-margin stretch-card">
+<div class="mb-4">
+  <div class="grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
         <h4 class="card-title">Staff List</h4>
@@ -10,11 +9,10 @@
           <button type="button" class="btn btn-secondary" (click)="export('csv')"><i class="mdi mdi-file-document-outline mdi-18px"></i></button>
           <button type="button" class="btn btn-secondary" (click)="export('png')"><i class="mdi mdi-file-image-outline mdi-18px"></i></button>
         </div>-->
-        <div class="table-responsive">
+        <div class="table-responsive h-100">
             <ng2-smart-table [settings]="settings" [source]="source" (editConfirm)=onEdit($event)></ng2-smart-table>
         </div>
       </div>
     </div>
-  </div>
   </div>
 </div>

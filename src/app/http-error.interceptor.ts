@@ -20,10 +20,18 @@ export class HttpErrorInterceptor implements HttpInterceptor {
               // client-side error
               errorMessage = `Error: ${error.error.message}`;
               alert('Data Not Saved. ClientSide Error');
-            } else {
+            } else if (error.status === 500){
               // server-side error
               errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-              alert('Data Issue. Error Code: ' + error.status);
+              alert('Error Code: ' + error.status + ', Session Expired. Reloading...');
+              location.reload();
+            } else if (error.status === 0){
+              errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+              alert('Error Code: ' + error.status + ', Server Disconnected. Contact Administrator');
+              console.log(errorMessage);
+            } else{
+              errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+              console.log(errorMessage);
             }
             // window.alert(errorMessage);
             return throwError(errorMessage);

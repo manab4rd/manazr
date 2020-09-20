@@ -21,6 +21,7 @@ export class ApplyLeaveComponent implements OnInit {
   leaveTypeData = false;
   id: any;
   approverList: any[];
+  isAdmin = this.authService.myuser.usertype === 'admin' ? true : false;
 
   calendarFilter = (d: Date): boolean => {
     // console.log(this.authService.myuser.saturday);

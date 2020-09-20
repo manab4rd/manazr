@@ -133,7 +133,7 @@ export class ListStudentComponent implements OnInit {
       //   return;
       // }
       this.authService.checkError(res);
-      if (res.status === 1) {
+      if (res && res.status === 1) {
         this.studentArray = res.data;
         // console.log(this.studentArray);
         this.source = new LocalDataSource(this.studentArray);

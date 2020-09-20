@@ -1,5 +1,8 @@
+<div *ngIf="isAdmin" class="juicy-peach-gradient p-3 d-inline-block">
+    This section is not available for Administrator profile.
+</div>
 <div *ngIf="!leaveTypeData" class="juicy-peach-gradient p-3 d-inline-block"> <p>Please add Leave Type before adding Leave </p><button routerLink='/dashboard/leave/leave-type' class="btn btn-info pull-right">Add Leave Type</button></div>
-    <mat-tab-group *ngIf="leaveTypeData" animationDuration="1000ms" class="card">
+    <mat-tab-group *ngIf="leaveTypeData && !isAdmin" animationDuration="1000ms" class="card">
         <mat-tab label="Leave List" *ngIf="isAddMode">
             <ng-template matTabContent>
                 <app-list-leave></app-list-leave>
